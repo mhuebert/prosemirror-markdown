@@ -124,7 +124,10 @@ function tokenHandlers(schema, tokens) {
         }
       } else {
         handlers[type + "_open"] = (state, tok) => state.openMark(markType.create(attrs(spec.attrs, tok)))
-        handlers[type + "_close"] = state => state.closeMark(markType)
+        handlers[type + "_close"] = state => {
+          if (spec.handleClose) spec.handleClose(state.stack[state.stack.length-1])
+          state.closeMark(markType)
+        }
       }
     } else {
       throw new RangeError("Unrecognized parsing spec " + JSON.stringify(spec))
